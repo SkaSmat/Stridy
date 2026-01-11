@@ -10,8 +10,12 @@ import Home from "./pages/Home";
 import MapView from "./pages/MapView";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import { testSupabaseConnection } from './lib/testConnection';
 
 const queryClient = new QueryClient();
+
+// Test connection to external Supabase on app startup
+testSupabaseConnection();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
