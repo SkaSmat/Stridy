@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Bell, Moon, Globe, MapPin, Shield, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { toast } from "sonner";
+import { usePreferences } from "@/hooks/usePreferences";
 import {
   Select,
   SelectContent,
@@ -27,16 +27,10 @@ import {
 
 export default function Settings() {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState(true);
-  const [badgeNotifications, setBadgeNotifications] = useState(true);
-  const [streakReminders, setStreakReminders] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState("fr");
-  const [units, setUnits] = useState("metric");
-  const [publicProfile, setPublicProfile] = useState(false);
+  const { preferences, updatePreference } = usePreferences();
 
   const handleSave = () => {
-    toast.success("Préférences sauvegardées");
+    toast.success("Préférences sauvegardées automatiquement");
   };
 
   const handleDeleteAccount = () => {
@@ -73,8 +67,8 @@ export default function Settings() {
               </div>
               <Switch
                 id="notifications"
-                checked={notifications}
-                onCheckedChange={setNotifications}
+                checked={preferences.notifications}
+                onCheckedChange={(checked) => updatePreference('notifications', checked)}
               />
             </div>
             <div className="flex items-center justify-between">
@@ -84,9 +78,9 @@ export default function Settings() {
               </div>
               <Switch
                 id="badges"
-                checked={badgeNotifications}
-                onCheckedChange={setBadgeNotifications}
-                disabled={!notifications}
+                checked={preferences.badgeNotifications}
+                onCheckedChange={(checked) => updatePreference('badgeNotifications', checked)}
+                disabled={!preferences.notifications}
               />
             </div>
             <div className="flex items-center justify-between">
@@ -96,9 +90,9 @@ export default function Settings() {
               </div>
               <Switch
                 id="streak"
-                checked={streakReminders}
-                onCheckedChange={setStreakReminders}
-                disabled={!notifications}
+                checked={preferences.streakReminders}
+                onCheckedChange={(checked) => updatePreference('streakReminders', checked)}
+                disabled={!preferences.notifications}
               />
             </div>
           </div>
@@ -118,8 +112,8 @@ export default function Settings() {
               </div>
               <Switch
                 id="darkMode"
-                checked={darkMode}
-                onCheckedChange={setDarkMode}
+                checked={preferences.darkMode}
+                onCheckedChange={(checked) => updatePreference('darkMode', checked)}
               />
             </div>
           </div>
@@ -137,7 +131,10 @@ export default function Settings() {
                 <Label className="font-medium">Langue</Label>
                 <p className="text-sm text-muted-foreground">Langue de l'application</p>
               </div>
-              <Select value={language} onValueChange={setLanguage}>
+              <Select 
+                value={preferences.language} 
+                onValueChange={(value: 'fr' | 'en' | 'es') => updatePreference('language', value)}
+              >
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -153,7 +150,10 @@ export default function Settings() {
                 <Label className="font-medium">Unités</Label>
                 <p className="text-sm text-muted-foreground">Système de mesure</p>
               </div>
-              <Select value={units} onValueChange={setUnits}>
+              <Select 
+                value={preferences.units} 
+                onValueChange={(value: 'metric' | 'imperial') => updatePreference('units', value)}
+              >
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -193,8 +193,8 @@ export default function Settings() {
               </div>
               <Switch
                 id="publicProfile"
-                checked={publicProfile}
-                onCheckedChange={setPublicProfile}
+                checked={preferences.publicProfile}
+                onCheckedChange={(checked) => updatePreference('publicProfile', checked)}
               />
             </div>
           </div>
