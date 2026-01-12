@@ -15,11 +15,13 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    toast.success("✉️ Message envoyé !", {
-      description: "Nous vous répondrons dans les 24-48h"
+    // IMPORTANT: Formulaire non connecté à un backend
+    // Pour implémenter l'envoi: utiliser un service comme EmailJS, SendGrid, ou créer une API
+    toast.info("🚧 Formulaire de contact en cours d'implémentation", {
+      description: "Pour nous contacter, utilisez les réseaux sociaux ci-dessous",
+      duration: 6000
     });
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    // Ne pas réinitialiser le formulaire pour que l'utilisateur puisse copier son message
   };
 
   return (
