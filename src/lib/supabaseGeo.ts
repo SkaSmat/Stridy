@@ -1,21 +1,23 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Client Supabase externe pour les données géospatiales (PostGIS)
-// IMPORTANT: Ces clés doivent être dans les variables d'environnement (.env)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL_GEO;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY_GEO;
+// IMPORTANT: Ces clés sont stockées dans les secrets Lovable Cloud
+const supabaseUrl = import.meta.env.VITE_EXTERNAL_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_EXTERNAL_SUPABASE_ANON_KEY;
 const supabaseServiceKey = import.meta.env.VITE_EXTERNAL_SUPABASE_SERVICE_KEY;
 
 // Validation des variables d'environnement
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error(
-    '❌ ERREUR CRITIQUE: Variables d\'environnement Supabase manquantes!\n' +
-    'Vérifiez que VITE_SUPABASE_URL_GEO et VITE_SUPABASE_ANON_KEY_GEO sont définies dans .env'
+  console.warn(
+    '⚠️ Variables d\'environnement Supabase Geo non configurées.\n' +
+    'Les fonctionnalités géospatiales seront limitées.'
   );
-  throw new Error('Missing Supabase environment variables');
 }
 
-export const supabaseGeo = createClient(supabaseUrl, supabaseAnonKey);
+// Créer le client seulement si les variables sont disponibles
+export const supabaseGeo = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 // Client admin avec service_role (bypass RLS)
 export const supabaseGeoAdmin = supabaseServiceKey 

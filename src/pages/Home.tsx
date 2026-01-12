@@ -9,6 +9,8 @@ import { explorationEvents } from "@/hooks/useExplorationRefresh";
 import { User } from "@supabase/supabase-js";
 import { SkeletonStat, SkeletonCityCard } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useTranslation } from "@/lib/i18n";
+import { cityProgressService } from "@/services/CityProgressService";
 
 interface UserStats {
   totalDistance: number;
