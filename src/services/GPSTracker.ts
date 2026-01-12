@@ -139,6 +139,7 @@ class GPSTracker {
       currentPosition: lastPoint ? { lat: lastPoint.lat, lng: lastPoint.lng } : null,
       streets: this.session.streets,
       exploredStreetIds: this.session.exploredStreetIds,
+      gpsPoints: this.session.gpsPoints,
     };
   }
 
