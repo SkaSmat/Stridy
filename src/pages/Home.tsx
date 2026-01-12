@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MapPin, Route, Building2, Flame, Plus, ChevronRight, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { supabaseGeo } from "@/lib/supabaseGeo";
+import { explorationEvents } from "@/hooks/useExplorationRefresh";
 import { User } from "@supabase/supabase-js";
 import { SkeletonStat, SkeletonCityCard } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -36,6 +37,7 @@ export default function Home() {
   });
   const [cities, setCities] = useState<CityProgress[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -58,6 +60,14 @@ export default function Home() {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // Subscribe to exploration events for auto-refresh
+  useEffect(() => {
+    const unsubscribe = explorationEvents.subscribe(() => {
+      setRefreshKey(prev => prev + 1);
+    });
+    return unsubscribe;
+  }, []);
 
   // Load user stats and cities
   useEffect(() => {
@@ -146,7 +156,7 @@ export default function Home() {
     };
 
     loadUserData();
-  }, [user]);
+  }, [user, refreshKey]);
 
   if (loading) {
     return (
