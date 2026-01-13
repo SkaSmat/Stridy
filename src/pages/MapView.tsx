@@ -504,7 +504,7 @@ export default function MapView() {
               ? "bg-red-500 hover:bg-red-600"
               : isLoading || isLoadingStreets
               ? "bg-indigo-600/70"
-              : "bg-indigo-600 hover:bg-indigo-700 animate-pulse-ring"
+              : "bg-indigo-600 hover:bg-indigo-700 hover:scale-105"
           }`}
         >
           <div className="flex flex-col items-center gap-2">
