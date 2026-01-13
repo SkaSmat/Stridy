@@ -392,14 +392,7 @@ export default function Profile() {
             {settingsItems.map((item, index) => (
               <button
                 key={item.label}
-                onClick={() => {
-                  const messages = {
-                    "Préférences": "⚙️ Page de préférences bientôt disponible !",
-                    "Confidentialité": "🔒 Paramètres de confidentialité bientôt disponibles !",
-                    "Aide": "❓ Centre d'aide bientôt disponible !"
-                  };
-                  toast.info(messages[item.label as keyof typeof messages]);
-                }}
+                onClick={() => handleSettingsClick(item.action)}
                 className={`w-full flex items-center justify-between px-4 py-4 hover:bg-muted/50 transition-colors ${
                   index !== settingsItems.length - 1 ? "border-b border-border" : ""
                 }`}
