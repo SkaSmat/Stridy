@@ -9,6 +9,7 @@ import { usePreferences } from "@/hooks/usePreferences";
 import { useTranslation } from "@/lib/i18n";
 import { stravaService } from "@/services/StravaService";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseGeo } from "@/lib/supabaseGeo";
 import { useEffect, useState } from "react";
 import {
   Select,
@@ -43,13 +44,16 @@ export default function Settings() {
   const checkStravaConnection = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
+      if (!session?.user) {
+        setCheckingStrava(false);
+        return;
+      }
 
-      const { data } = await supabase
+      const { data } = await supabaseGeo
         .from('strava_connections')
         .select('id')
         .eq('user_id', session.user.id)
-        .single();
+        .maybeSingle();
 
       setStravaConnected(!!data);
     } catch (error) {
