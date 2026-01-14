@@ -44,6 +44,16 @@ export default function MapView() {
     });
   }, [navigate]);
 
+  // Clean up any stuck GPS sessions on mount
+  useEffect(() => {
+    // Force reset GPS tracker to clean up any stuck sessions
+    if (gpsTracker.isTrackingActive()) {
+      console.warn('⚠️ Found active GPS session on mount, resetting...');
+      gpsTracker.forceReset();
+      toast.info('Session GPS précédente nettoyée');
+    }
+  }, []); // Run once on mount
+
   // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -71,6 +81,11 @@ export default function MapView() {
             source: "osm",
             minzoom: 0,
             maxzoom: 19,
+            paint: {
+              "raster-brightness-min": 0.3,  // Darken the map slightly
+              "raster-brightness-max": 0.9,  // Reduce brightness
+              "raster-saturation": -0.3,     // Reduce saturation for less colorful background
+            }
           },
         ],
       },
@@ -184,17 +199,30 @@ export default function MapView() {
               data: trackGeoJSON
             });
 
-            // Add GPS track layer
+            // Add GPS track glow layer (background)
+            map.addLayer({
+              id: 'gps-track-layer-glow',
+              type: 'line',
+              source: 'gps-track',
+              paint: {
+                'line-color': '#3B82F6', // Blue
+                'line-width': 10,
+                'line-opacity': 0.2,
+                'line-blur': 6
+              }
+            });
+
+            // Add GPS track main layer
             map.addLayer({
               id: 'gps-track-layer',
               type: 'line',
               source: 'gps-track',
               paint: {
                 'line-color': '#3B82F6', // Blue
-                'line-width': 4,
-                'line-opacity': 0.7
+                'line-width': 5,
+                'line-opacity': 0.9
               }
-            }, 'streets-layer'); // Add above streets but below marker
+            });
           }
         }
 
@@ -230,7 +258,25 @@ export default function MapView() {
               data: geojson
             });
 
-            // Add layer for streets
+            // Add glow layer for explored streets (background)
+            map.addLayer({
+              id: 'streets-layer-glow',
+              type: 'line',
+              source: 'streets',
+              paint: {
+                'line-color': [
+                  'case',
+                  ['get', 'explored'],
+                  '#FC4C02', // Strava orange for explored
+                  'rgba(0,0,0,0)' // Transparent for unexplored
+                ],
+                'line-width': 8,
+                'line-opacity': 0.3,
+                'line-blur': 4
+              }
+            });
+
+            // Add main layer for streets
             map.addLayer({
               id: 'streets-layer',
               type: 'line',
@@ -239,13 +285,18 @@ export default function MapView() {
                 'line-color': [
                   'case',
                   ['get', 'explored'],
-                  '#22c55e', // Green for explored
-                  '#94a3b8'  // Gray for unexplored
+                  '#FC4C02', // Strava orange for explored
+                  '#E5E7EB'  // Very light gray for unexplored (barely visible)
                 ],
-                'line-width': 3,
-                'line-opacity': 0.8
+                'line-width': 4,
+                'line-opacity': [
+                  'case',
+                  ['get', 'explored'],
+                  0.9,  // Bright for explored
+                  0.3   // Very faint for unexplored
+                ]
               }
-            }, 'osm'); // Add below OSM tiles
+            });
           }
         }
       }
