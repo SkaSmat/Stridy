@@ -4,9 +4,7 @@ import { ArrowLeft, Navigation, Pause, MapPin, Route, Clock, Map } from "lucide-
 import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
-import { supabaseGeo } from "@/lib/supabaseGeo";
 import { gpsTracker } from "@/services/GPSTracker";
-import { ensureUserInGeo } from "@/lib/supabaseGeo";
 import { explorationEvents } from "@/hooks/useExplorationRefresh";
 import { toast } from "sonner";
 import maplibregl from "maplibre-gl";
@@ -114,7 +112,7 @@ export default function MapView() {
 
     try {
       // Get user's explored streets
-      const { data: exploredData, error } = await supabaseGeo
+      const { data: exploredData, error } = await supabase
         .from('explored_streets')
         .select('street_osm_id, city')
         .eq('user_id', userId);
@@ -384,9 +382,6 @@ export default function MapView() {
       }
 
       toast.info("📍 Recherche de votre position...", { duration: 2000 });
-
-      // Ensure user exists in geo database (fix foreign key error)
-      await ensureUserInGeo(userId);
 
       // Get current position and detect city
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {

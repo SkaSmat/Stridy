@@ -72,7 +72,7 @@ const isRetryableError = (error: any): boolean => {
  * @example
  * ```typescript
  * const { data, error } = await retryQuery(
- *   () => supabaseGeo.from('users').select('*').eq('id', userId).single(),
+ *   () => supabase.from('users').select('*').eq('id', userId).single(),
  *   { maxRetries: 3, onRetry: (attempt, err) => console.log(`Retry ${attempt}:`, err) }
  * );
  * ```
@@ -148,7 +148,7 @@ export async function retryQuery<T>(
  * });
  *
  * const { data, error } = await retryWithToast(
- *   () => supabaseGeo.from('users').select('*')
+ *   () => supabase.from('users').select('*')
  * );
  * ```
  */

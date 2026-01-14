@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { supabaseGeo } from "@/lib/supabaseGeo";
+import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { SkeletonCityCard } from "@/components/ui/skeleton";
 
@@ -54,7 +54,7 @@ export default function Cities() {
       try {
         setLoadingData(true);
 
-        const { data: cityData, error: cityError } = await supabaseGeo
+        const { data: cityData, error: cityError } = await supabase
           .from('city_progress')
           .select('city, streets_explored, total_distance_meters, last_activity')
           .eq('user_id', user.id)

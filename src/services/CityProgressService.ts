@@ -1,5 +1,5 @@
 import { overpassService, type BBox } from './OverpassService';
-import { supabaseGeo } from '@/lib/supabaseGeo';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CityStreetCount {
   city: string;
@@ -92,7 +92,7 @@ class CityProgressService {
     }
 
     // Check database cache
-    const { data: dbCache } = await supabaseGeo
+    const { data: dbCache } = await supabase
       .from('overpass_cache')
       .select('total_streets, cached_at')
       .eq('city', cityName)
@@ -123,7 +123,7 @@ class CityProgressService {
       this.saveCache();
 
       // Save to database cache
-      await supabaseGeo
+      await supabase
         .from('overpass_cache')
         .upsert({
           city: cityName,

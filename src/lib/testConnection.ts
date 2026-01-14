@@ -1,11 +1,11 @@
-import { supabaseGeo } from './supabaseGeo';
+import { supabase } from './supabase';
 
 export async function testSupabaseConnection() {
   try {
     console.log('🧪 Testing Supabase external connection...');
     
     // Test 1: Query badges
-    const { data: badges, error: badgesError } = await supabaseGeo
+    const { data: badges, error: badgesError } = await supabase
       .from('badges')
       .select('*')
       .limit(3);
@@ -18,7 +18,7 @@ export async function testSupabaseConnection() {
     console.log('✅ Badges query successful:', badges);
     
     // Test 2: Query overpass_cache
-    const { data: cache, error: cacheError } = await supabaseGeo
+    const { data: cache, error: cacheError } = await supabase
       .from('overpass_cache')
       .select('city')
       .limit(1);
