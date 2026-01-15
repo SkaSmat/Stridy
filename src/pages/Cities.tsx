@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { SkeletonCityCard } from "@/components/ui/skeleton";
 

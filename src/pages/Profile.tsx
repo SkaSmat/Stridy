@@ -17,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { SkeletonStat, SkeletonBadge } from "@/components/ui/skeleton";

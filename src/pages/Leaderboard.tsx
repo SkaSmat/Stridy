@@ -4,7 +4,6 @@ import { ArrowLeft, Trophy, Medal, Award, MapPin, Route, Building2 } from "lucid
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { useTranslation } from "@/lib/i18n";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
