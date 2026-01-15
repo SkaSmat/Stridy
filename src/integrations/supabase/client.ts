@@ -2,9 +2,9 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-// Lovable Cloud Supabase instance
-const SUPABASE_URL = "https://qycsyvjnynvkuluiyzyx.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5Y3N5dmpueW52a3VsdWl5enl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxNDI0ODcsImV4cCI6MjA4MzcxODQ4N30.JfsKjbV9I_35iBXsg1iCBSTVYKtywo7LqXMPgZ14m9U";
+// External Supabase instance (PostGIS enabled)
+const SUPABASE_URL = "https://anujltoavoafclklucdx.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFudWpsdG9hdm9hZmNsa2x1Y2R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgxMzIyNTQsImV4cCI6MjA4MzcwODI1NH0.eRjOECx2G5_MrL2KvXWw4vRDnP-JEOYm_70VXkPf5AU";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
