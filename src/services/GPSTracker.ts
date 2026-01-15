@@ -1,6 +1,6 @@
 import { overpassService, type Street } from './OverpassService';
 import { streetMatcher, type GPSPoint } from './StreetMatcher';
-import { supabaseGeo } from '@/lib/supabaseGeo';
+import { supabase } from '@/integrations/supabase/client';
 import { badgeChecker } from './BadgeChecker';
 import { toast } from 'sonner';
 
@@ -329,7 +329,7 @@ class GPSTracker {
       const geometry = `SRID=4326;LINESTRING(${coordsWKT})`;
 
       // Insérer le track
-      const { data: track, error: trackError } = await supabaseGeo
+      const { data: track, error: trackError } = await supabase
         .from('gps_tracks')
         .insert({
           user_id: this.session.userId,
@@ -351,7 +351,7 @@ class GPSTracker {
       const exploredIds = Array.from(this.session.exploredStreetIds);
       
       if (exploredIds.length > 0) {
-        const { data, error } = await supabaseGeo.rpc('calculate_explored_streets_v2', {
+        const { data, error } = await supabase.rpc('calculate_explored_streets_v2', {
           p_track_id: track.id,
           p_user_id: this.session.userId,
           p_explored_osm_ids: exploredIds,

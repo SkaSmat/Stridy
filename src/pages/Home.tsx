@@ -3,8 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { MapPin, Route, Building2, Flame, Plus, ChevronRight, Bell, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { supabaseAuth as supabase } from "@/lib/supabaseClient";
-import { supabaseGeo } from "@/lib/supabaseGeo";
+import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { explorationEvents } from "@/hooks/useExplorationRefresh";
 import { User } from "@supabase/supabase-js";
 import { SkeletonStat, SkeletonCityCard } from "@/components/ui/skeleton";
@@ -81,7 +81,7 @@ export default function Home() {
         setLoadingData(true);
 
         // Fetch user profile stats
-        const { data: profile, error: profileError } = await supabaseGeo
+        const { data: profile, error: profileError } = await supabase
           .from('user_profiles')
           .select('total_distance_meters, total_streets_explored, created_at')
           .eq('id', user.id)
@@ -92,7 +92,7 @@ export default function Home() {
         }
 
         // Fetch city progress
-        const { data: cityData, error: cityError } = await supabaseGeo
+        const { data: cityData, error: cityError } = await supabase
           .from('city_progress')
           .select('city, streets_explored, total_distance_meters, last_activity')
           .eq('user_id', user.id)
@@ -103,7 +103,7 @@ export default function Home() {
         }
 
         // Calculate streak (days with activity)
-        const { data: tracks, error: tracksError } = await supabaseGeo
+        const { data: tracks, error: tracksError } = await supabase
           .from('gps_tracks')
           .select('started_at')
           .eq('user_id', user.id)

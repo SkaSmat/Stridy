@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { supabaseAuth as supabase } from "@/lib/supabaseClient";
-import { supabaseGeo } from "@/lib/supabaseGeo";
+import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { SkeletonStat, SkeletonBadge } from "@/components/ui/skeleton";
@@ -100,7 +100,7 @@ export default function Profile() {
         setLoadingData(true);
 
         // Fetch user profile stats
-        const { data: profile, error: profileError } = await supabaseGeo
+        const { data: profile, error: profileError } = await supabase
           .from('user_profiles')
           .select('total_distance_meters, total_streets_explored, created_at')
           .eq('id', user.id)
@@ -113,7 +113,7 @@ export default function Profile() {
         }
 
         // Fetch city count
-        const { data: cities, error: citiesError } = await supabaseGeo
+        const { data: cities, error: citiesError } = await supabase
           .from('city_progress')
           .select('city')
           .eq('user_id', user.id);
@@ -123,7 +123,7 @@ export default function Profile() {
         }
 
         // Calculate streak
-        const { data: tracks, error: tracksError } = await supabaseGeo
+        const { data: tracks, error: tracksError } = await supabase
           .from('gps_tracks')
           .select('started_at')
           .eq('user_id', user.id)
@@ -154,7 +154,7 @@ export default function Profile() {
         }
 
         // Fetch badges
-        const { data: allBadges, error: badgesError } = await supabaseGeo
+        const { data: allBadges, error: badgesError } = await supabase
           .from('badges')
           .select('*');
 
@@ -163,7 +163,7 @@ export default function Profile() {
         }
 
         // Fetch unlocked badges
-        const { data: unlockedBadges, error: unlockedError } = await supabaseGeo
+        const { data: unlockedBadges, error: unlockedError } = await supabase
           .from('user_badges')
           .select('badge_id, unlocked_at')
           .eq('user_id', user.id);
