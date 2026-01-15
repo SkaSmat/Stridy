@@ -1,3 +1,4 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,13 +21,11 @@ import StravaImport from "./pages/StravaImport";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import Cities from "./pages/Cities";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
-import { testSupabaseConnection } from './lib/testConnection';
 
 const queryClient = new QueryClient();
-
-// Test connection to external Supabase on app startup
-testSupabaseConnection();
 
 const App = () => (
   <ErrorBoundary>
@@ -52,6 +51,8 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/cities" element={<Cities />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

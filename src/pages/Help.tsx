@@ -89,7 +89,7 @@ export default function Help() {
             {faqItems.map((item, index) => (
               <AccordionItem
                 key={index}
-                value={\`item-\${index}\`}
+                value={`item-${index}`}
                 className="bg-card border border-border rounded-xl px-4"
               >
                 <AccordionTrigger className="hover:no-underline py-4">
