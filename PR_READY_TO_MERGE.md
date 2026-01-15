@@ -5,6 +5,7 @@
 **Pull Request #11:** `claude/review-frontend-requirements-4karb` → `main`
 **Conflits:** ✅ Tous résolus
 **Tests:** ✅ Code compilé et fonctionnel
+**Audit Lovable:** ✅ Problèmes critiques résolus
 **Prêt à merger:** ✅ OUI
 
 ## 📊 Ce qui sera Déployé
@@ -77,18 +78,22 @@
 - ❌ Erreurs "foreign key constraint violated"
 - ❌ Double coût ($50/mois)
 - ❌ RLS incohérent
+- ❌ Deux fichiers clients créant conflit
 
 **Après:** 1 instance unique (externe)
 - ✅ Plus de sync manuelle
 - ✅ Plus d'erreurs foreign key
 - ✅ Économie $25/mois
 - ✅ RLS cohérent
+- ✅ Un seul client Supabase unifié
 
 **Changements code:**
 - ❌ Supprimé: `src/lib/supabaseGeo.ts`
+- ❌ Supprimé: `src/lib/supabaseClient.ts`
 - ❌ Supprimé: `ensureUserInGeo()` function
 - ✅ Unifié: Tous les imports vers `@/integrations/supabase/client`
-- ✅ Mis à jour: 13 fichiers automatiquement
+- ✅ Mis à jour: 18 fichiers automatiquement
+- ✅ Audit Lovable: Conflit d'instances résolu
 
 ---
 
@@ -155,8 +160,9 @@
 - `src/integrations/supabase/client.ts` - Comment added
 - Tous les services - Import unifié
 
-### Fichiers Supprimés (2)
-- `src/lib/supabaseGeo.ts` - Plus nécessaire
+### Fichiers Supprimés (3)
+- `src/lib/supabaseGeo.ts` - Plus nécessaire (ancien client geo)
+- `src/lib/supabaseClient.ts` - Plus nécessaire (ancien client auth)
 - `src/lib/testConnection.ts` - Obsolète
 
 ---
