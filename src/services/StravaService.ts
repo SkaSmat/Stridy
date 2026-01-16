@@ -38,8 +38,8 @@ interface StravaAthlete {
 
 class StravaService {
   private readonly clientId = import.meta.env.VITE_STRAVA_CLIENT_ID;
-  private readonly clientSecret = import.meta.env.VITE_STRAVA_CLIENT_SECRET;
   private readonly redirectUri = `${window.location.origin}/auth/strava/callback`;
+  private readonly supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
   /**
    * Get Strava OAuth authorization URL
@@ -51,27 +51,54 @@ class StravaService {
 
   /**
    * Exchange authorization code for access token
+   * SECURITY: Uses server-side Edge Function to protect client secret
+   * Edge Function: supabase/functions/strava-exchange
    */
   async exchangeToken(code: string): Promise<{ access_token: string; refresh_token: string; athlete: StravaAthlete }> {
     try {
-      const response = await fetch('https://www.strava.com/oauth/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          code,
-          grant_type: 'authorization_code',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to exchange Strava token');
+      // Get current session for auth
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('User must be authenticated to connect Strava');
       }
 
-      return await response.json();
+      // Call Edge Function (client secret is secure on server)
+      const response = await fetch(
+        `${this.supabaseUrl}/functions/v1/strava-exchange`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Failed to exchange Strava token: ${error}`);
+      }
+
+      const data = await response.json();
+
+      // Edge Function returns athlete data but saves tokens securely in DB
+      // We need to fetch the connection to get tokens for API calls
+      const { data: connection, error: connError } = await supabase
+        .from('strava_connections')
+        .select('access_token, refresh_token')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (connError || !connection) {
+        throw new Error('Failed to retrieve Strava connection');
+      }
+
+      return {
+        access_token: connection.access_token,
+        refresh_token: connection.refresh_token,
+        athlete: data.athlete,
+      };
     } catch (error) {
       console.error('Strava token exchange error:', error);
       throw error;
