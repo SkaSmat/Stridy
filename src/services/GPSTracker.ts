@@ -3,6 +3,7 @@ import { streetMatcher, type GPSPoint } from './StreetMatcher';
 import { supabase } from '@/integrations/supabase/client';
 import { badgeChecker } from './BadgeChecker';
 import { toast } from 'sonner';
+import type { GPSTrackInsert, GPSTrack } from '@/types/database.types';
 
 interface TrackingSession {
   sessionId: string;
@@ -329,17 +330,21 @@ class GPSTracker {
       const geometry = `SRID=4326;LINESTRING(${coordsWKT})`;
 
       // Insérer le track
-      const { data: track, error: trackError } = await (supabase as any)
+      const trackData: GPSTrackInsert = {
+        user_id: this.session.userId,
+        city: this.session.city,
+        route_geometry: geometry,
+        distance_meters: Math.round(distance),
+        duration_seconds: Math.round(duration / 1000),
+        started_at: new Date(this.session.startTime).toISOString(),
+        ended_at: new Date().toISOString(),
+        source: 'gps',
+        strava_activity_id: null,
+      };
+
+      const { data: track, error: trackError } = await supabase
         .from('gps_tracks')
-        .insert({
-          user_id: this.session.userId,
-          city: this.session.city,
-          route_geometry: geometry,
-          distance_meters: Math.round(distance),
-          duration_seconds: Math.round(duration / 1000),
-          started_at: new Date(this.session.startTime).toISOString(),
-          ended_at: new Date().toISOString(),
-        })
+        .insert(trackData)
         .select()
         .single();
 
@@ -349,9 +354,9 @@ class GPSTracker {
 
       // Appeler la fonction pour calculer les rues explorées
       const exploredIds = Array.from(this.session.exploredStreetIds);
-      
+
       if (exploredIds.length > 0 && track) {
-        const { data, error } = await (supabase as any).rpc('calculate_explored_streets_v2', {
+        const { data, error } = await supabase.rpc('calculate_explored_streets_v2', {
           p_track_id: track.id,
           p_user_id: this.session.userId,
           p_explored_osm_ids: exploredIds,
