@@ -54,7 +54,7 @@ export default function Leaderboard() {
         setLoadingData(true);
 
         // Fetch all user profiles with their stats
-        const { data: profiles, error } = await (supabase as any)
+        const { data: profiles, error } = await supabase
           .from('user_profiles')
           .select('id, username, total_distance_meters, total_streets_explored')
           .order('total_distance_meters', { ascending: false })
@@ -68,8 +68,8 @@ export default function Leaderboard() {
 
         // Fetch city counts for each user
         const userCityCounts: { [key: string]: number } = {};
-        
-        const { data: cityData } = await (supabase as any)
+
+        const { data: cityData } = await supabase
           .from('city_progress')
           .select('user_id, city');
 

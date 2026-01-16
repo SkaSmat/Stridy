@@ -2,6 +2,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { overpassService } from './OverpassService';
 import { streetMatcher, type GPSPoint } from './StreetMatcher';
 import { toast } from 'sonner';
+import { logger } from './Logger';
+import type { StravaConnectionInsert, GPSTrackInsert, GPSTrack } from '@/types/database.types';
 
 interface StravaActivity {
   id: number;
@@ -100,7 +102,7 @@ class StravaService {
         athlete: data.athlete,
       };
     } catch (error) {
-      console.error('Strava token exchange error:', error);
+      logger.error('Strava token exchange error:', error);
       throw error;
     }
   }
@@ -110,23 +112,32 @@ class StravaService {
    */
   async saveConnection(userId: string, accessToken: string, refreshToken: string, athlete: StravaAthlete): Promise<void> {
     try {
-      const { error } = await (supabase as any)
+      const connectionData: Partial<StravaConnectionInsert> = {
+        user_id: userId,
+        strava_athlete_id: athlete.id,
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        athlete_username: athlete.username,
+        athlete_firstname: athlete.firstname,
+        athlete_lastname: athlete.lastname,
+        athlete_profile: athlete.profile,
+        expires_at: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 hours default
+        athlete_data: {
+          id: athlete.id,
+          username: athlete.username,
+          firstname: athlete.firstname,
+          lastname: athlete.lastname,
+          profile: athlete.profile,
+        },
+      };
+
+      const { error } = await supabase
         .from('strava_connections')
-        .upsert({
-          user_id: userId,
-          strava_athlete_id: athlete.id,
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          athlete_username: athlete.username,
-          athlete_firstname: athlete.firstname,
-          athlete_lastname: athlete.lastname,
-          athlete_profile: athlete.profile,
-          connected_at: new Date().toISOString(),
-        });
+        .upsert(connectionData);
 
       if (error) throw error;
     } catch (error) {
-      console.error('Error saving Strava connection:', error);
+      logger.error('Error saving Strava connection:', error);
       throw error;
     }
   }
@@ -151,7 +162,7 @@ class StravaService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching Strava activities:', error);
+      logger.error('Error fetching Strava activities:', error);
       throw error;
     }
   }
@@ -176,7 +187,7 @@ class StravaService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching activity stream:', error);
+      logger.error('Error fetching activity stream:', error);
       throw error;
     }
   }
@@ -200,14 +211,14 @@ class StravaService {
         onProgress?.(i + 1, activities.length);
 
         // Check if already imported
-        const { data: existing } = await (supabase as any)
+        const { data: existing } = await supabase
           .from('gps_tracks')
           .select('id')
           .eq('strava_activity_id', activities[i].id)
           .single();
 
         if (existing) {
-          console.log(`⏭️ Skipping already imported activity ${activities[i].id}`);
+          logger.info(`Skipping already imported activity ${activities[i].id}`);
           skipped++;
           continue;
         }
@@ -216,7 +227,7 @@ class StravaService {
         const stream = await this.getActivityStream(activities[i].id, accessToken);
 
         if (!stream.latlng?.data || stream.latlng.data.length === 0) {
-          console.log(`⏭️ Skipping activity ${activities[i].id} (no GPS data)`);
+          logger.info(`Skipping activity ${activities[i].id} (no GPS data)`);
           skipped++;
           continue;
         }
@@ -227,14 +238,14 @@ class StravaService {
 
         // Rate limit: pause every 50 requests (30 seconds)
         if ((i + 1) % 50 === 0 && i < activities.length - 1) {
-          console.log('⏸️ Rate limit pause (30s)...');
+          logger.info('Rate limit pause (30s)...');
           await new Promise(resolve => setTimeout(resolve, 30000));
         } else {
           // Small delay between requests
           await new Promise(resolve => setTimeout(resolve, 500));
         }
       } catch (error) {
-        console.error(`Error importing activity ${activities[i].id}:`, error);
+        logger.error(`Error importing activity ${activities[i].id}:`, error);
         errors++;
       }
     }
@@ -281,20 +292,21 @@ class StravaService {
       const geometry = `SRID=4326;LINESTRING(${coordsWKT})`;
 
       // Save track to database
-      const { data: track, error: trackError } = await (supabase as any)
+      const trackData: GPSTrackInsert = {
+        user_id: userId,
+        city,
+        route_geometry: geometry,
+        distance_meters: Math.round(activity.distance),
+        duration_seconds: activity.moving_time,
+        started_at: activity.start_date,
+        ended_at: new Date(new Date(activity.start_date).getTime() + activity.moving_time * 1000).toISOString(),
+        strava_activity_id: activity.id,
+        source: 'strava',
+      };
+
+      const { data: track, error: trackError } = await supabase
         .from('gps_tracks')
-        .insert({
-          user_id: userId,
-          city,
-          route_geometry: geometry,
-          distance_meters: Math.round(activity.distance),
-          duration_seconds: activity.moving_time,
-          started_at: activity.start_date,
-          ended_at: new Date(new Date(activity.start_date).getTime() + activity.moving_time * 1000).toISOString(),
-          strava_activity_id: activity.id,
-          strava_activity_name: activity.name,
-          source: 'strava',
-        })
+        .insert(trackData)
         .select()
         .single();
 
@@ -302,7 +314,7 @@ class StravaService {
 
       // Save explored streets
       if (exploredStreetIds.length > 0 && track) {
-        const { error } = await (supabase as any).rpc('calculate_explored_streets_v2', {
+        const { error } = await supabase.rpc('calculate_explored_streets_v2', {
           p_track_id: track.id,
           p_user_id: userId,
           p_explored_osm_ids: Array.from(exploredStreetIds),
@@ -312,9 +324,9 @@ class StravaService {
         if (error) throw error;
       }
 
-      console.log(`✅ Imported activity: ${activity.name} (${exploredStreetIds.length} streets)`);
+      logger.info(`Imported activity: ${activity.name} (${exploredStreetIds.length} streets)`);
     } catch (error) {
-      console.error('Error processing activity:', error);
+      logger.error('Error processing activity:', error);
       throw error;
     }
   }
@@ -342,7 +354,7 @@ class StravaService {
         'Unknown City'
       );
     } catch (error) {
-      console.error('City detection error:', error);
+      logger.error('City detection error:', error);
       return 'Unknown City';
     }
   }
@@ -352,7 +364,7 @@ class StravaService {
    */
   async disconnect(userId: string): Promise<void> {
     try {
-      const { error} = await (supabase as any)
+      const { error } = await supabase
         .from('strava_connections')
         .delete()
         .eq('user_id', userId);
@@ -361,7 +373,7 @@ class StravaService {
 
       toast.success('Compte Strava déconnecté');
     } catch (error) {
-      console.error('Error disconnecting Strava:', error);
+      logger.error('Error disconnecting Strava:', error);
       toast.error('Erreur lors de la déconnexion');
       throw error;
     }
