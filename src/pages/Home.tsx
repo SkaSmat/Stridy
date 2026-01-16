@@ -80,7 +80,7 @@ export default function Home() {
         setLoadingData(true);
 
         // Fetch user profile stats
-        const { data: profile, error: profileError } = await (supabase as any)
+        const { data: profile, error: profileError } = await supabase
           .from('user_profiles')
           .select('total_distance_meters, total_streets_explored, created_at')
           .eq('id', user.id)
@@ -91,7 +91,7 @@ export default function Home() {
         }
 
         // Fetch city progress
-        const { data: cityData, error: cityError } = await (supabase as any)
+        const { data: cityData, error: cityError } = await supabase
           .from('city_progress')
           .select('city, streets_explored, total_distance_meters, last_activity')
           .eq('user_id', user.id)
@@ -102,7 +102,7 @@ export default function Home() {
         }
 
         // Calculate streak (days with activity)
-        const { data: tracks, error: tracksError } = await (supabase as any)
+        const { data: tracks, error: tracksError } = await supabase
           .from('gps_tracks')
           .select('started_at')
           .eq('user_id', user.id)
