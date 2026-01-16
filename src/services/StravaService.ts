@@ -2,6 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { overpassService } from './OverpassService';
 import { streetMatcher, type GPSPoint } from './StreetMatcher';
 import { toast } from 'sonner';
+import type { StravaConnectionInsert, GPSTrackInsert, GPSTrack } from '@/types/database.types';
 
 interface StravaActivity {
   id: number;
@@ -110,19 +111,28 @@ class StravaService {
    */
   async saveConnection(userId: string, accessToken: string, refreshToken: string, athlete: StravaAthlete): Promise<void> {
     try {
-      const { error } = await (supabase as any)
+      const connectionData: Partial<StravaConnectionInsert> = {
+        user_id: userId,
+        strava_athlete_id: athlete.id,
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        athlete_username: athlete.username,
+        athlete_firstname: athlete.firstname,
+        athlete_lastname: athlete.lastname,
+        athlete_profile: athlete.profile,
+        expires_at: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 hours default
+        athlete_data: {
+          id: athlete.id,
+          username: athlete.username,
+          firstname: athlete.firstname,
+          lastname: athlete.lastname,
+          profile: athlete.profile,
+        },
+      };
+
+      const { error } = await supabase
         .from('strava_connections')
-        .upsert({
-          user_id: userId,
-          strava_athlete_id: athlete.id,
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          athlete_username: athlete.username,
-          athlete_firstname: athlete.firstname,
-          athlete_lastname: athlete.lastname,
-          athlete_profile: athlete.profile,
-          connected_at: new Date().toISOString(),
-        });
+        .upsert(connectionData);
 
       if (error) throw error;
     } catch (error) {
