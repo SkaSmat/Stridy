@@ -332,7 +332,7 @@ export default function MapView() {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
         {
           headers: {
-            'User-Agent': 'StreetExplorer/1.0'
+            'User-Agent': 'Stridy/1.0'
           }
         }
       );

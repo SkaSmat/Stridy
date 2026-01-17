@@ -16,7 +16,7 @@ The badge system automatically rewards users for achieving milestones in their e
 | **Street Collector** | 🗺️ | Streets | 10 | Explore 10 different streets |
 | **Street Master** | ⭐ | Streets | 100 | Explore 100 different streets |
 | **Globe Trotter** | 🌍 | Cities | 3 | Explore 3 different cities |
-| **City Explorer** | 🏙️ | Cities | 10 | Explore 10 different cities |
+| **Stridy** | 🏙️ | Cities | 10 | Explore 10 different cities |
 | **Neighborhood Explorer** | 🏘️ | Neighborhood | 100% | Complete 100% of a neighborhood |
 
 ---

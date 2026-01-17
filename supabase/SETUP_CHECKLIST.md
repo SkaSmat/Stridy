@@ -1,6 +1,6 @@
 # 🚀 Supabase Setup Checklist
 
-Quick checklist to ensure your Supabase is properly configured for City Explorer.
+Quick checklist to ensure your Supabase is properly configured for Stridy.
 
 ## ✅ Pre-requisites
 

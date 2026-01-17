@@ -2,7 +2,7 @@
 
 ## Résumé Exécutif
 
-L'application City Explorer nécessite **7 tables** avec des colonnes très spécifiques.
+L'application Stridy nécessite **7 tables** avec des colonnes très spécifiques.
 
 ---
 
@@ -114,7 +114,7 @@ created_at TIMESTAMPTZ DEFAULT NOW()
 5. Globe Trotter (3 villes)
 6. Marathon Walker (42 km)
 7. Street Master (100 rues)
-8. City Explorer (10 villes)
+8. Stridy (10 villes)
 
 **Utilisé dans:**
 - BadgeChecker.ts:47 → `.select('*')`

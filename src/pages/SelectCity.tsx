@@ -70,7 +70,7 @@ export default function SelectCity() {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`,
         {
           headers: {
-            'User-Agent': 'StreetExplorer/1.0',
+            'User-Agent': 'Stridy/1.0',
           },
         }
       );
@@ -110,7 +110,7 @@ export default function SelectCity() {
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=10&addressdetails=1`,
         {
           headers: {
-            'User-Agent': 'StreetExplorer/1.0',
+            'User-Agent': 'Stridy/1.0',
           },
         }
       );

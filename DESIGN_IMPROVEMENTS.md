@@ -1,4 +1,4 @@
-# 🎨 City Explorer - Design Improvement Recommendations
+# 🎨 Stridy - Design Improvement Recommendations
 
 **Current State**: Functional but basic, missing gamification elements
 **Goal**: Match quality of Weward, Stepin (modern fitness/exploration apps)
