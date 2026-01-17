@@ -1,4 +1,4 @@
-# 🚀 Implementation Summary - City Explorer Frontend
+# 🚀 Implementation Summary - Stridy Frontend
 
 ## ✅ Completed Implementations
 

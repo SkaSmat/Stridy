@@ -87,7 +87,7 @@ export default function Signup() {
         {/* Logo */}
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
           <Map className="w-8 h-8 text-primary" />
-          <span className="font-bold text-2xl">StreetExplorer</span>
+          <span className="font-bold text-2xl">Stridy</span>
         </Link>
 
         {/* Card */}

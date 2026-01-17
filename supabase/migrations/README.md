@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains SQL migration files for the City Explorer database. Migrations should be run in sequential order.
+This folder contains SQL migration files for the Stridy database. Migrations should be run in sequential order.
 
 ## Migration Files (Clean Set)
 

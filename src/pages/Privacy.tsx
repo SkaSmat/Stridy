@@ -198,7 +198,7 @@ export default function Privacy() {
       <footer className="border-t border-border mt-20 py-8">
         <div className="container max-w-4xl mx-auto px-6 text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            © 2024 City Explorer. Tous droits réservés.
+            © 2024 Stridy. Tous droits réservés.
           </p>
           <div className="flex justify-center gap-4 text-sm">
             <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">

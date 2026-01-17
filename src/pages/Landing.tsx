@@ -115,7 +115,7 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2">
               <Map className="w-6 h-6 text-primary" />
-              <span className="font-semibold text-lg">StreetExplorer</span>
+              <span className="font-semibold text-lg">Stridy</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <button onClick={() => toast.info("About page coming soon")} className="hover:text-foreground transition-colors">About</button>
@@ -135,7 +135,7 @@ export default function Landing() {
             </div>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-8">
-            © 2024 StreetExplorer. All rights reserved.
+            © 2024 Stridy. All rights reserved.
           </p>
         </div>
       </footer>

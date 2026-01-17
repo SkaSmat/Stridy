@@ -1,8 +1,8 @@
-# City Explorer - Supabase Setup Guide
+# Stridy - Supabase Setup Guide
 
 ## 📋 Overview
 
-This guide helps you set up the Supabase database for City Explorer, including tables, policies, and the RPC function.
+This guide helps you set up the Supabase database for Stridy, including tables, policies, and the RPC function.
 
 ## 🚀 Quick Start
 

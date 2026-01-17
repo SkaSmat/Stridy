@@ -25,7 +25,7 @@ export default function About() {
             <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-gradient shadow-lg">
               <MapPin className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-4xl font-bold">City Explorer</h2>
+            <h2 className="text-4xl font-bold">Stridy</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Explorez votre ville comme jamais auparavant. Découvrez chaque rue, débloquez des badges et devenez un véritable explorateur urbain.
             </p>
@@ -38,7 +38,7 @@ export default function About() {
               <h3 className="text-2xl font-bold">Notre Mission</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              City Explorer est né d'une passion pour l'exploration urbaine. Notre mission est de transformer chaque promenade en une aventure enrichissante, en vous encourageant à découvrir les coins cachés de votre ville et à créer des souvenirs inoubliables.
+              Stridy est né d'une passion pour l'exploration urbaine. Notre mission est de transformer chaque promenade en une aventure enrichissante, en vous encourageant à découvrir les coins cachés de votre ville et à créer des souvenirs inoubliables.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Inspiré par des applications comme CityStrides et Wandrer, nous voulons gamifier l'exploration urbaine et créer une communauté de passionnés qui redécouvrent leur environnement à pied.
@@ -92,7 +92,7 @@ export default function About() {
           <section className="bg-card rounded-2xl border border-border p-8 space-y-4 text-center">
             <h3 className="text-2xl font-bold">Développé avec ❤️</h3>
             <p className="text-muted-foreground">
-              City Explorer est un projet open source en constante évolution. Nous sommes passionnés par l'exploration urbaine et la technologie.
+              Stridy est un projet open source en constante évolution. Nous sommes passionnés par l'exploration urbaine et la technologie.
             </p>
             <div className="flex flex-wrap justify-center gap-3 pt-4">
               <span className="px-4 py-2 bg-muted rounded-full text-sm font-medium">React</span>
@@ -126,7 +126,7 @@ export default function About() {
       <footer className="border-t border-border mt-20 py-8">
         <div className="container max-w-4xl mx-auto px-6 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2024 City Explorer. Tous droits réservés.
+            © 2024 Stridy. Tous droits réservés.
           </p>
         </div>
       </footer>
